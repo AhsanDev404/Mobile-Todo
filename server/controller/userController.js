@@ -7,7 +7,6 @@ export const register = catchAsyncError(async (req, res, next) => {
   const { name, email, password } = req.body;
   let user = await User.findOne({ email });
   if (user) {
-    // custom class for error handel
     return next(new ErrorHandler(401, "User already exist"));
   }
   user = await User.create({ name, email, password });
@@ -18,16 +17,16 @@ export const register = catchAsyncError(async (req, res, next) => {
 });
 
 export const login = catchAsyncError(async (req, res, next) => {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email }).select("+password");
-    if (!user) {
-      return next(new ErrorHandler(401, "Invalid Email or Password"));
-    }
-    const isMatched = await user.comparePassword(password);
-    if (!isMatched) {
-      return next(new ErrorHandler(401, "Invalid Email or Password"));
-    }
-    sendToken(201, user, res);
-  });
+  const { email, password } = req.body;
+  let user = await User.findOne({ email }).select("+password");
+  if (!user) {
+    return next(new ErrorHandler(401, "Invalid Email or Password"));
+  }
+  const isMatched = await user.comparePassword(password);
+  if (!isMatched) {
+    return next(new ErrorHandler(401, "Invalid Email or Password"));
+  }
 
-  export default 
+  sendToken(200, user, res);
+});
+

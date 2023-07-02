@@ -6,6 +6,8 @@ const sendToken = (statusCode, user, res) => {
         Date.now() + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000
       ),
     };
+    user = user.toObject();
+    delete user.password;
     res.status(statusCode).cookie("token", token, option).json({
       success: true,
       user,
